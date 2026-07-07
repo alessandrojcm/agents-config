@@ -1,0 +1,14 @@
+# dot-agents generated files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Local overrides (not synced)
+local/*
+!local/.gitkeep
+
+# Secrets (add your own patterns)
+# secrets/
+# *.secret
+# .env*
