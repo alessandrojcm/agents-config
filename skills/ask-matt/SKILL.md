@@ -55,6 +55,7 @@ Off the main flow entirely.
 - **`/grill-me`** — the same relentless interview as `/grill-with-docs`, but for when you have **no codebase**. Stateless: it saves nothing locally, builds no `CONTEXT.md`. Reach for it to sharpen any plan or design that doesn't live in a repo.
 - **`/teach`** — learn a concept over multiple sessions, using the current directory as a stateful workspace.
 - **`/ast-grep-linter`** — set up ast-grep as a structural linter for a project: detect the existing linting baseline, interview for rules the baseline can't express, write and test the rules, wire the ast-grep LSP into that project's opencode config. One-session, per-project.
+- **`/codebase-patterns`** — audit a repository's contribution patterns, update AGENTS guidance, then feed enforceable patterns into `/ast-grep-linter` as structural rules.
 - **`/writing-great-skills`** — reference for writing and editing skills well.
 
 ## Precondition
