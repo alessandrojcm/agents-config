@@ -265,6 +265,15 @@
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-07-08T14:41:48.340Z",
       "updatedAt": "2026-07-08T14:41:48.340Z"
+    },
+    "playwriter": {
+      "source": "remorses/playwriter",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/remorses/playwriter.git",
+      "skillPath": "skills/playwriter/SKILL.md",
+      "skillFolderHash": "e07f981a95b1764f5f0d7efe59a134d5c24fa151",
+      "installedAt": "2026-07-14T13:43:50.817Z",
+      "updatedAt": "2026-07-14T13:43:50.817Z"
     }
   },
   "dismissed": {
