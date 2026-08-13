@@ -41,22 +41,29 @@ Re-read current herdr IDs before each dispatch because IDs compact. For each cla
    ```
 
 2. Parse `result.workspace.workspace_id` and `result.root_pane.pane_id` from the response into the ledger.
-3. Start opencode in that root pane:
+3. Start an auto-approved opencode build worker in that root pane. The interactive process is the coordinator's control channel; `--auto` gives the worker authority to execute routine tooling without waiting at permission prompts:
 
    ```bash
-   herdr agent start <agent> --kind opencode --pane <pane-id>
+   herdr agent start <agent> --kind opencode --pane <pane-id> -- --agent build --auto
    ```
 
 4. Prompt it with `herdr agent prompt <agent> <prompt>`. Include the exact ticket title, body, acceptance criteria, source reference, and this contract:
 
    ```text
    Invoke /implement for this ticket only. Its blockers are already integrated.
+   You have default authority over every reversible, ticket-local engineering decision.
+   Resolve choices from the ticket, repo instructions, neighboring code, and project defaults.
+   Use the project's existing toolchain and package manager; install dependencies required by the ticket.
+   A hard blocker exists only when progress requires missing credentials or access, an irreversible
+   or destructive action, contradictory acceptance criteria, or a product decision with materially
+   different observable outcomes and no answer in repo evidence. Report the evidence checked and
+   the exact unresolved decision when one of those conditions occurs.
    Work only in this worktree. Run the ticket's checks, review the result, and commit it.
    Return control to the coordinator for merging and ticket-state updates; implement no other ticket.
    Finish with the commit hash, checks run, and any residual risk or blocker.
    ```
 
-This step is complete when every claimed frontier ticket has one live agent in its own worktree and the ledger records all returned IDs.
+This step is complete when every claimed frontier ticket has one auto-approved build worker in its own worktree, each worker has received the autonomy contract, and the ledger records all returned IDs.
 
 ## 4. Run the conveyor
 
@@ -69,7 +76,12 @@ Repeat until the ledger has no open ticket:
 5. Refresh ticket states and blocking edges from the source, recompute the frontier, then claim and dispatch every newly unblocked ticket using steps 2–3. New worktrees always branch from the latest integrated `HEAD`.
 6. When agents are still working and no state changed, run `herdr agent wait <agent> --until done --timeout <sized-ms>` for a running agent, then inspect all agents again. A timeout triggers an agent read and diagnosis rather than a blind retry.
 
-Keep independent agents running while one result is being integrated. A blocked agent leaves its ticket claimed: read its exact blocker, continue unaffected tickets, and ask the user for the missing decision or environmental fix. A merge or verification failure leaves the worktree intact and the ticket incomplete; report the failing command and key error before asking how to proceed.
+Keep independent agents running while one result is being integrated. A blocked agent leaves its ticket claimed. Read its exact blocker and compare it with the dispatch contract's hard-blocker bound:
+
+- Below the bound, the blocker is coordinator-owned: make the reversible ticket-local decision from the ticket, repo evidence, neighboring code, or project defaults; prompt the worker to continue; and record the decision in the ledger. Toolchain choice, use of the existing package manager, installing ticket-required dependencies, and choosing a conventional local seam belong here.
+- At the bound, continue unaffected tickets and ask the user for only the exact fact or decision needed.
+
+Only blockers at the hard bound reach the user. A merge or verification failure leaves the worktree intact and the ticket incomplete; report the failing command and key error before asking how to proceed.
 
 If open tickets remain but the frontier is empty and no agent is running, report the unresolved blocking chain; the conveyor is deadlocked, not complete.
 
