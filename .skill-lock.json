@@ -341,6 +341,15 @@
       "skillFolderHash": "4821f1d39ccae24b9b274b03184edaaf198a3994",
       "installedAt": "2026-08-16T15:06:35.873Z",
       "updatedAt": "2026-08-16T15:06:35.873Z"
+    },
+    "visual-pr": {
+      "source": "humanlayer/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/humanlayer/skills.git",
+      "skillPath": "plugins/visual-pr/skills/visual-pr/SKILL.md",
+      "skillFolderHash": "2104d685d33ba9594a4dfe13241f0f7f02190401",
+      "installedAt": "2026-09-20T16:00:58.648Z",
+      "updatedAt": "2026-09-20T16:00:58.648Z"
     }
   },
   "dismissed": {
@@ -348,14 +357,13 @@
   },
   "lastSelectedAgents": [
     "amp",
-    "antigravity",
-    "antigravity-cli",
     "cline",
     "codex",
     "cursor",
-    "deepagents",
+    "droid",
     "gemini-cli",
     "github-copilot",
+    "kilo",
     "kimi-code-cli",
     "opencode",
     "warp",
