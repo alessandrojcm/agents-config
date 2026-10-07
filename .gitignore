@@ -12,3 +12,6 @@ local/*
 # secrets/
 # *.secret
 # .env*
+
+skills/**/__pycache__/*
+skills/copy-adoption-report/**
