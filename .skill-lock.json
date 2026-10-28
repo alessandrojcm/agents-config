@@ -329,9 +329,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git",
       "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
-      "skillFolderHash": "3d66a0486c1000e6da51da67b0cb917be22ea8dd",
+      "skillFolderHash": "829c4dab53f10cde51f0ff58b0bb13fe870f7e94",
       "installedAt": "2026-08-13T13:57:58.346Z",
-      "updatedAt": "2026-08-13T13:57:58.346Z"
+      "updatedAt": "2026-10-28T12:07:13.721Z"
     },
     "herdr": {
       "source": "herdrdev/herdr",
@@ -350,6 +350,16 @@
       "skillFolderHash": "2104d685d33ba9594a4dfe13241f0f7f02190401",
       "installedAt": "2026-09-20T16:00:58.648Z",
       "updatedAt": "2026-09-20T16:00:58.648Z"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/anthropics/skills.git",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "skillFolderHash": "d79e2a5bb4df4a386c2adcdd9ab8709bba28c3f6",
+      "pluginName": "example-skills",
+      "installedAt": "2026-10-28T12:06:40.016Z",
+      "updatedAt": "2026-10-28T12:06:40.016Z"
     }
   },
   "dismissed": {
@@ -361,6 +371,7 @@
     "codex",
     "cursor",
     "droid",
+    "fx",
     "gemini-cli",
     "github-copilot",
     "kilo",
