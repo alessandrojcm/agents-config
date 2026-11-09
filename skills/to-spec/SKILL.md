@@ -46,6 +46,7 @@ A list of implementation decisions that were made. This can include:
 
 - The modules that will be built/modified
 - The interfaces of those modules that will be modified
+- Prior art for each module: the existing helpers, types, and patterns it reuses, and the domain or bounded context that owns it
 - Technical clarifications from the developer
 - Architectural decisions
 - Schema changes

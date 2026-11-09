@@ -13,7 +13,7 @@ rule:                          # required, the rule object
   <atomic | relational | composite fields>
 # --- optional linting fields ---
 message: <single-line, shown in diagnostics>
-severity: error                # error | warning | hint | info | off
+severity: error                # error | warning | info | hint (default) | off; only error fails scan
 note: <longer markdown explanation, no metavariables>
 # fix: <template string or FixConfig>   # auto-fix, see Fix below
 # constraints:                          # metavariable filters, see Constraints
@@ -29,7 +29,14 @@ note: <longer markdown explanation, no metavariables>
 
 ## Languages
 
-The `language:` field takes the **capitalized** name (not the CLI alias). Valid values: `Bash`, `C`, `Cpp`, `CSharp`, `Css`, `Elixir`, `Go`, `Haskell`, `Hcl`, `Html`, `Java`, `JavaScript`, `Json`, `Kotlin`, `Lua`, `Nix`, `Php`, `Python`, `Ruby`, `Rust`, `Scala`, `Solidity`, `Swift`, `Tsx`, `TypeScript`, `Yaml`.
+`language:` takes a language name or its CLI alias, case-insensitively: `TypeScript` and `ts` both work. Prefer the names: `Bash`, `C`, `Cpp`, `CSharp`, `Css`, `Elixir`, `Go`, `Haskell`, `Hcl`, `Html`, `Java`, `JavaScript`, `Json`, `Kotlin`, `Lua`, `Nix`, `Php`, `Python`, `Ruby`, `Rust`, `Scala`, `Solidity`, `Swift`, `Tsx`, `TypeScript`, `Yaml`. Newer releases add more, such as `Markdown` and `Zig`. See the [language list](https://ast-grep.github.io/reference/languages.html).
+
+The language also decides **which files a rule scans**, by extension:
+
+- `TypeScript` scans `.ts`, `.cts` and `.mts` only. `Tsx` scans `.tsx`.
+- `JavaScript` covers `.js`, `.jsx`, `.mjs` and `.cjs`.
+
+To cover both `.ts` and `.tsx`, put two documents in the rule file, separated by `---`, with distinct ids (e.g. `no-x` and `no-x-tsx`) and `language: TypeScript` / `language: Tsx`. Alternatively, set `languageGlobs: { tsx: ['*.ts'] }` in `sgconfig.yml` so every `.ts` file parses as TSX. That alternative breaks on angle-bracket type assertions (`<T>expr`).
 
 ## Atomic rules
 
@@ -68,7 +75,7 @@ rule:
   kind: field_definition
 ```
 
-**ESQuery-style** (v0.39.1+): `kind: call_expression > identifier` matches an `identifier` child of `call_expression`. Internally converted to a relational `has` rule.
+**ESQuery-style** (v0.39+): `kind: call_expression > identifier` matches an `identifier` child of `call_expression`. Internally converted to a relational `has` rule.
 
 ### `regex`
 
@@ -275,11 +282,11 @@ invalid:
   - async function foo() { for (var bar of baz) await bar; }
 ```
 
-Run `ast-grep test` from project root. Output marks cases: `.` pass, `N` noisy (reported on valid), `M` missing (not reported on invalid). Add `--skip-snapshot-tests` while iterating; run `ast-grep test -U` to generate/refresh snapshots for the diagnostic-span test.
+Run `ast-grep test` from the project root. Each case is marked `.` (pass), `N` (noisy: reported on valid code), `M` (missing: not reported on invalid code), `W` (wrong: the snapshot is missing or differs) or `U` (snapshot updated). While iterating, add `--skip-snapshot-tests` to check only valid/invalid. Plain `ast-grep test` fails with `W` until `ast-grep test -U` records `<testDir>/__snapshots__/<id>-snapshot.yml`, which captures each diagnostic's span. Commit the snapshots. Use `-f <glob>` to run a subset of rules.
 
 ## `sgconfig.yml`
 
-Project root config. Required for `scan` and the LSP.
+Project root config. Required for `scan` and `test`.
 
 ```yaml
 ruleDirs:
@@ -302,4 +309,4 @@ All paths resolve relative to `sgconfig.yml`'s location.
 - **`all`/`any` test one node.** `has: { all: [kind: number, kind: string] }` matches nothing — one child can't be both. Use `all: [has: {kind: number}, has: {kind: string}]`.
 - **`fix` is textual, not parsed.** `nonMeta$GREET` substitutes `$GREET` even though the result isn't valid code.
 - **`constraints` don't apply inside `not`.** The sub-rule inside `not` is matched before constraints filter, so constraint-keyed metavariables there are unbound.
-- **`language` field is capitalized.** `TypeScript`, not `ts`. The lowercase aliases (`ts`, `js`, `cpp`) are for CLI `--lang`, not rule YAML.
+- **`TypeScript` rules skip `.tsx`.** A rule's language picks the files it scans. Pair it with a `Tsx` document (see Languages).

@@ -16,11 +16,13 @@ The issue tracker and triage label vocabulary should have been provided to you �
 
 Work from whatever is already in the conversation context. If the user passes a reference (a spec path, an issue number or URL) as an argument, fetch it and read its full body and comments.
 
-### 2. Explore the codebase (optional)
+### 2. Explore the codebase and find precedents
 
 If you have not already explored the codebase, do so to understand the current state of the code. Ticket titles and descriptions should use the project's domain glossary vocabulary, and respect ADRs in the area you're touching.
 
 Look for opportunities to prefactor the code to make the implementation easier. "Make the change easy, then make the easy change."
+
+Find each slice's **precedent**: the existing helpers, types, patterns, and tests it should reuse or follow, and the domain or bounded context that owns it. Take these from the spec's prior art where it has them; search the codebase for the rest.
 
 ### 3. Draft vertical slices
 
@@ -46,6 +48,7 @@ Present the proposed breakdown as a numbered list. For each ticket, show:
 - **Title**: short descriptive name
 - **Blocked by**: which other tickets (if any) must complete first
 - **What it delivers**: the end-to-end behaviour this ticket makes work
+- **Precedent**: what it reuses or follows, and the owning domain
 
 Ask the user:
 
@@ -74,6 +77,8 @@ Do NOT close or modify any parent issue.
 
 **Blocked by:** the numbers/titles of the tickets that gate this one, or "None — can start immediately".
 
+**Precedent:** the existing helpers, patterns, and tests to reuse or follow, named by module or symbol, and the domain that owns the change.
+
 **Status:** ready-for-agent
 
 - [ ] Acceptance criterion 1
@@ -90,6 +95,10 @@ A reference to the parent issue on the tracker (if the source was an existing is
 ## What to build
 
 The end-to-end behaviour this ticket makes work, from the user's perspective — not layer-by-layer implementation.
+
+## Precedent
+
+The existing helpers, patterns, and tests to reuse or follow, named by module or symbol, and the domain that owns the change.
 
 ## Acceptance criteria
 
