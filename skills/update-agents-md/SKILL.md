@@ -1,86 +1,43 @@
 ---
 name: update-agents-md
-description: Instructs agents on how to maintain and update the AGENTS.md file after sessions. Use when an agent needs to append new conventions, stack decisions, or workflow notes to AGENTS.md, or when refactoring existing agent notes into a modular structure.
+description: Maintain AGENTS.md or CLAUDE.md when correcting stale guidance, recording a verified recurring workflow pitfall absent from ordinary repository sources, or explicitly auditing agent instructions. Routine task completion is not a trigger.
 ---
 
 # Update AGENTS.md
 
-## Quick start
+AGENTS.md and CLAUDE.md guide future agents' behavior. They are not implementation documentation or session logs. Leaving them unchanged is a successful outcome; there is no per-task note quota.
 
-After completing a task that reveals a new convention, boundary, or workflow rule, append it to AGENTS.md or the appropriate sub-document. Do not let knowledge disappear with the session.
+## Admission gate
 
-## Workflows
+Before adding a note, answer all three:
 
-### 1. Post-session update
+1. **Behavioral:** What specific action should a future agent take differently?
+2. **Non-duplicative:** Why would reading the owning code, tests, scripts, configuration, or existing documentation not reveal this?
+3. **Durable:** What evidence makes this a recurring repository pitfall rather than a task-specific observation?
 
-- [ ] Identify any new decisions, constraints, or patterns discovered during the session.
-- [ ] Determine if the note belongs in an existing sub-document or requires a new one.
-- [ ] Append the note using the same bullet style as existing entries.
-- [ ] Keep entries atomic: one idea per bullet.
-- [ ] If a new note contradicts an old one, update the old note in-place. AGENTS.md reflects current conventions only; do not preserve historical markers or changelog entries.
+If any answer is missing, make no addition. A new dependency, command, config edit, or implementation decision does not qualify by itself. An explicit request to audit guidance authorizes the audit, not arbitrary additions.
 
-### 2. Refactor into modular sub-docs
+## Edit workflow
 
-AGENTS.md must stay short. When a section grows beyond ~50 lines, extract it:
-
-- [ ] Create a focused sub-document under `docs/agents/` (e.g., `docs/agents/testing.md`, `docs/agents/running.md`).
-- [ ] Move the detailed bullets into the sub-document.
-- [ ] Replace the inline content in AGENTS.md with a link:
-  `See [docs/agents/<name>.md](docs/agents/<name>.md).`
-- [ ] Ensure the sub-document has a clear heading matching its topic.
-
-### 3. Existing sub-document categories
-
-| Topic | File |
-|-------|------|
-| Issue tracker | `docs/agents/issue-tracker.md` |
-| Triage labels | `docs/agents/triage-labels.md` |
-| Domain docs | `docs/agents/domain.md` |
-
-Add new categories as needed under `docs/agents/`.
-
-## Rules
-
-- AGENTS.md is an index, not a dump. If a section exceeds 50 lines, it belongs in a sub-document.
-- Use consistent bullet style (`- ` at the start of each line).
-- Prefer linking over inlining. The AGENTS.md table of contents should fit on one screen.
-- Update AGENTS.md **last**, after all code changes are complete, so notes reflect the final state.
-- When removing obsolete notes, do not leave orphaned links in AGENTS.md. If a sub-document becomes empty, delete it and remove the link.
+1. Read the existing guidance and the candidate's owning source. Check for an existing rule before adding one.
+2. Correct or remove stale and redundant guidance in place. A correction does not need to introduce a new pitfall; preserve only guidance that passes the admission gate.
+3. For an admitted addition, write the smallest actionable rule with its trigger. Match the file's bullet style and keep one idea per bullet.
+4. Put implementation details in their owning code, operational docs, or architectural docs. If no documentation change is needed, leave them in the code and tests. Creating `docs/agents/` does not make unsuitable content suitable.
+5. Review the final diff: every retained addition must change future agent behavior, add otherwise-unavailable knowledge, and remain useful beyond this task. Remove additions that fail this check.
 
 ## Examples
 
-### Good: Extracting an overgrown section
+| Candidate | Outcome |
+|-----------|---------|
+| A verified shared test database is not isolated, and parallel runs corrupt fixtures; no existing guidance reveals this | Add: "Run these integration suites serially; they share fixture state." |
+| An existing instruction names a retired workflow | Correct or remove it; do not append a history of the migration. |
+| "The failure counter now has `reason` and `custom_template` tags" | No agent-guidance edit. The metric implementation or operational docs owns this. |
+| "Field X is copied from result Y", "function Z now handles fallback", or "we added dependency Q" | No agent-guidance edit. Code, tests, or package configuration already records it. |
+| "Preprod was slow today" or "this task passed 26 tests" | No agent-guidance edit. Report task-specific observations in the task response. |
+| A domain invariant or architectural decision | Record in the existing domain or architectural docs when needed; admit an agent-facing rule only if it separately passes the gate. |
 
-AGENTS.md before (52 lines under `## Testing`):
+## Organizing admitted guidance
 
-```markdown
-## Testing
+Keep AGENTS.md an index. If an admitted guidance section grows beyond about 50 lines, use an existing focused agent document or extract one and add a trigger-bearing pointer. Prune unsuitable content before moving it. Prefer existing repository paths over inventing a documentation taxonomy.
 
-- Run all tests with `go test ./...` or `make test`.
-- `make build` compiles all packages with `go build ./...`.
-- `make build-whisper` compiles all packages including whisper.cpp CGO code...
-- ... (49 more lines)
-```
-
-AGENTS.md after:
-
-```markdown
-## Testing
-
-See [docs/agents/testing.md](docs/agents/testing.md).
-```
-
-Content moved to `docs/agents/testing.md` with the original heading preserved.
-
-### Bad: Appending endlessly to AGENTS.md
-
-```markdown
-## Testing
-
-- Run all tests with `go test ./...` or `make test`.
-- `make build` compiles all packages with `go build ./...`.
-- `make build-whisper` compiles all packages including whisper.cpp CGO code...
-- ... (120 more lines)
-```
-
-This bloats the index and makes it hard to scan. Extract at ~50 lines.
+Update guidance after the work is verified so it reflects the final workflow. Preserve valid links, and remove orphaned pointers when deleting obsolete documents. Subagents pass candidate guidance changes to the parent instead of editing these files themselves.
